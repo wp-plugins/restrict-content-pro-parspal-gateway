@@ -14,7 +14,7 @@ Restrict Content Pro - ParsPal Gateway
 
 
 = Features =
-* First Payment Gateway for Restrict Content Pro (free)
+* First UnOfficial Payment Gateway for Restrict Content Pro (free)
 * Safe ...
 
 = Persian Description =
