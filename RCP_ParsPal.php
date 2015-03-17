@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: درگاه پرداخت پارس پال برای Restrict Content Pro
-Version: 1.0.0
+Version: 1.0.1
 Requires at least: 3.5
 Description: درگاه پرداخت <a href="http://www.parspal.com/" target="_blank"> پارس پال </a> برای افزونه Restrict Content Pro
 Plugin URI: http://webforest.ir/
@@ -19,7 +19,7 @@ if (!class_exists('RCP_ParsPal') ) {
 			add_action('rcp_payments_settings', array($this, 'ParsPal_Setting_By_HANNANStd'));
 			add_action('rcp_gateway_ParsPal', array($this, 'ParsPal_Request_By_HANNANStd'));
 			add_filter('rcp_payment_gateways', array($this, 'ParsPal_Register_By_HANNANStd'));
-			if (!function_exists('RCP_IRAN_Currencies_By_HANNANStd'))
+			if (!function_exists('RCP_IRAN_Currencies_By_HANNANStd') && !function_exists('RCP_IRAN_Currencies') )
 				add_filter('rcp_currencies', array($this, 'RCP_IRAN_Currencies_By_HANNANStd'));
 		}
 
@@ -107,8 +107,7 @@ if (!class_exists('RCP_ParsPal') ) {
 			$amount = $subscription_data['price'];
 			//fee is just for paypal recurring or ipn gateway ....
 			//$amount = $subscription_data['price'] + $subscription_data['fee']; 
-			if ($rcp_options['currency'] == 'ریال' || $rcp_options['currency'] == 'RIAL' || $rcp_options['currency'] == 'ریال ایران' || $rcp_options['currency'] == 'Iranian Rial (&#65020;)')
-				$amount = $amount/10;
+
 			$parspal_payment_data = array(
 				'user_id'             => $subscription_data['user_id'],
 				'subscription_name'     => $subscription_data['subscription_name'],
@@ -124,6 +123,8 @@ if (!class_exists('RCP_ParsPal') ) {
 			//Action For ParsPal or RCP Developers...
 			do_action( 'RCP_Before_Sending_to_ParsPal', $subscription_data );	
 		
+			if ($rcp_options['currency'] == 'ریال' || $rcp_options['currency'] == 'RIAL' || $rcp_options['currency'] == 'ریال ایران' || $rcp_options['currency'] == 'Iranian Rial (&#65020;)')
+				$amount = $amount/10;
 			
 			//Start of ParsPal
 			$Price = intval($amount);
@@ -208,8 +209,8 @@ if (!class_exists('RCP_ParsPal') ) {
 				if( $wpdb->get_results( $wpdb->prepare("SELECT id FROM " . $rcp_payments_db_name . " WHERE `subscription_key`='%s' AND `payment_type`='%s';", $subscription_key, $payment_method ) ) )
 					$new_payment = 0;
 
-				unset($GLOBALS['new']);
-				$GLOBALS['new'] = $new_payment;
+				unset($GLOBALS['parspal_new']);
+				$GLOBALS['parspal_new'] = $new_payment;
 				global $new;
 				$new = $new_payment;
 				
@@ -257,20 +258,20 @@ if (!class_exists('RCP_ParsPal') ) {
 				
 				
 				
-					unset($GLOBALS['payment_status']);
-					unset($GLOBALS['transaction_id']);
-					unset($GLOBALS['fault']);
-					unset($GLOBALS['subscription_key']);
-					$GLOBALS['payment_status'] = $payment_status;
-					$GLOBALS['transaction_id'] = $transaction_id;
-					$GLOBALS['subscription_key'] = $subscription_key;
-					$GLOBALS['fault'] = $fault;
+					unset($GLOBALS['parspal_payment_status']);
+					unset($GLOBALS['parspal_transaction_id']);
+					unset($GLOBALS['parspal_fault']);
+					unset($GLOBALS['parspal_subscription_key']);
+					$GLOBALS['parspal_payment_status'] = $payment_status;
+					$GLOBALS['parspal_transaction_id'] = $transaction_id;
+					$GLOBALS['parspal_subscription_key'] = $subscription_key;
+					$GLOBALS['parspal_fault'] = $fault;
 					global $parspal_transaction;
 					$parspal_transaction = array();
-					$parspal_transaction['payment_status'] = $payment_status;
-					$parspal_transaction['transaction_id'] = $transaction_id;
-					$parspal_transaction['subscription_key'] = $subscription_key;
-					$parspal_transaction['fault'] = $fault;
+					$parspal_transaction['parspal_payment_status'] = $payment_status;
+					$parspal_transaction['parspal_transaction_id'] = $transaction_id;
+					$parspal_transaction['parspal_subscription_key'] = $subscription_key;
+					$parspal_transaction['parspal_fault'] = $fault;
 				
 		
 					if ($payment_status == 'completed') 
@@ -312,7 +313,7 @@ if (!class_exists('RCP_ParsPal') ) {
 									
 						$log_data = array(
 							'post_title'    => __( 'تایید پرداخت', 'rcp_parspal' ),
-							'post_content'  =>  __( 'پرداخت با موفقیت انجام شد . کد تراکنش : ', 'rcp_parspal' ).$transaction_id,
+							'post_content'  =>  __( 'پرداخت با موفقیت انجام شد . کد تراکنش : ', 'rcp_parspal' ).$transaction_id.__( ' .  روش پرداخت : ', 'rcp_parspal' ).$payment_method,
 							'post_parent'   => 0,
 							'log_type'      => 'gateway_error'
 						);
@@ -335,7 +336,7 @@ if (!class_exists('RCP_ParsPal') ) {
 					
 						$log_data = array(
 							'post_title'    => __( 'انصراف از پرداخت', 'rcp_parspal' ),
-							'post_content'  =>  __( 'تراکنش به دلیل انصراف کاربر از پرداخت ، ناتمام باقی ماند .', 'rcp_parspal' ),
+							'post_content'  =>  __( 'تراکنش به دلیل انصراف کاربر از پرداخت ، ناتمام باقی ماند .', 'rcp_parspal' ).__( ' روش پرداخت : ', 'rcp_parspal' ).$payment_method,
 							'post_parent'   => 0,
 							'log_type'      => 'gateway_error'
 						);
@@ -357,7 +358,7 @@ if (!class_exists('RCP_ParsPal') ) {
 									
 						$log_data = array(
 							'post_title'    => __( 'خطا در پرداخت', 'rcp_parspal' ),
-							'post_content'  =>  __( 'تراکنش به دلیل خطای زیر ناموفق باقی باند :', 'rcp_parspal' ).'<br/>'.$this->Fault($fault),
+							'post_content'  =>  __( 'تراکنش به دلیل خطای رو به رو ناموفق باقی باند :', 'rcp_parspal' ).$this->Fault($fault).__( ' روش پرداخت : ', 'rcp_parspal' ).$payment_method,
 							'post_parent'   => 0,
 							'log_type'      => 'gateway_error'
 						);
@@ -388,11 +389,11 @@ if (!class_exists('RCP_ParsPal') ) {
 			$HANNANStd_session = HANNAN_Session::get_instance();
 			@session_start();
 			
-			$new_payment = isset($GLOBALS['new']) ? $GLOBALS['new'] : $new;
+			$new_payment = isset($GLOBALS['parspal_new']) ? $GLOBALS['parspal_new'] : $new;
 			
-			$payment_status = isset($GLOBALS['payment_status']) ? $GLOBALS['payment_status'] : $parspal_transaction['payment_status'];
-			$transaction_id = isset($GLOBALS['transaction_id']) ? $GLOBALS['transaction_id'] : $parspal_transaction['transaction_id'];
-			$fault = isset($GLOBALS['fault']) ? $this->Fault($GLOBALS['fault']) : $this->Fault($parspal_transaction['fault']);
+			$payment_status = isset($GLOBALS['parspal_payment_status']) ? $GLOBALS['parspal_payment_status'] : $parspal_transaction['parspal_payment_status'];
+			$transaction_id = isset($GLOBALS['parspal_transaction_id']) ? $GLOBALS['parspal_transaction_id'] : $parspal_transaction['parspal_transaction_id'];
+			$fault = isset($GLOBALS['parspal_fault']) ? $this->Fault($GLOBALS['parspal_fault']) : $this->Fault($parspal_transaction['parspal_fault']);
 			
 			if ($new_payment == 1) 
 			{

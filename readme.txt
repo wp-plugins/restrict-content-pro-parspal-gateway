@@ -3,8 +3,8 @@ Contributors: hannanstd
 Tags: restrict content pro,restrict content,persian restrict content,persian restrict content pro,restrict content pro farsi,restrict content farsi,rtl,fa_ir,iranian,iranian rials,iranian toman,iran state,restrict content pro.ir,restrict content pro payment,restrict content gateway,restrict content iran gateways,restrict content pro parspal,parspal,parsgate
 Donate link: http://www.hannanstd.ir
 Requires at least: 3.5
-Tested up to: 4.1
-Stable tag: 1.0.0
+Tested up to: 4.1.1
+Stable tag: 1.0.1
 License: GPL 2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Restrict Content Pro - ParsPal Gateway
@@ -33,10 +33,14 @@ Restrict Content Pro - ParsPal Gateway
 4. Enjoy It :)
 
 == Changelog ==
+= 1.0.1 =
+* Fixed Small Bug
 = 1.0.0 =
 * First version
 
 == Upgrade Notice ==
+= 1.0.1 =
+* Fixed Small Bug
 = 1.0.0 =
 * First version
 
