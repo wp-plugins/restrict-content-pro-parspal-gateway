@@ -231,6 +231,9 @@ if (!class_exists('RCP_ParsPal') ) {
 					}	
 					$client = new SoapClient($WebServiceUrl);
 					$Price = intval($amount);
+					if ($rcp_options['currency'] == 'ریال' || $rcp_options['currency'] == 'RIAL' || $rcp_options['currency'] == 'ریال ایران' || $rcp_options['currency'] == 'Iranian Rial (&#65020;)')
+						$Price = $Price/10;
+					
 					if(isset($_POST['status']) && $_POST['status'] == 100){
 						$Status = $_POST['status'];
 						$Refnumber = $_POST['refnumber'];
