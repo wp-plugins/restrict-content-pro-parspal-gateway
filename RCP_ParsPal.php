@@ -361,7 +361,7 @@ if (!class_exists('RCP_ParsPal') ) {
 									
 						$log_data = array(
 							'post_title'    => __( 'خطا در پرداخت', 'rcp_parspal' ),
-							'post_content'  =>  __( 'تراکنش به دلیل خطای رو به رو ناموفق باقی باند :', 'rcp_parspal' ).$this->Fault($fault).__( ' روش پرداخت : ', 'rcp_parspal' ).$payment_method,
+							'post_content'  =>  __( 'تراکنش به دلیل خطای رو به رو ناموفق باقی ماند :', 'rcp_parspal' ).$this->Fault($fault).__( ' روش پرداخت : ', 'rcp_parspal' ).$payment_method,
 							'post_parent'   => 0,
 							'log_type'      => 'gateway_error'
 						);
@@ -434,7 +434,7 @@ if (!class_exists('RCP_ParsPal') ) {
 			}
 			
 			if ($payment_status == 'failed') {
-				$message = '<br/>'.__( 'تراکنش به دلیل خطای زیر ناموفق باقی باند :', 'rcp_parspal' ).'<br/>'.$fault.'<br/>';
+				$message = '<br/>'.__( 'تراکنش به دلیل خطای زیر ناموفق باقی ماند :', 'rcp_parspal' ).'<br/>'.$fault.'<br/>';
 			}
 			
 			return $content.$message;
