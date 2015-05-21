@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: درگاه پرداخت پارس پال برای Restrict Content Pro
-Version: 1.0.1
+Version: 1.1.0
 Requires at least: 3.5
-Description: درگاه پرداخت <a href="http://www.parspal.com/" target="_blank"> پارس پال </a> برای افزونه Restrict Content Pro
+Description: درگاه پرداخت <a href="http://www.parspal.com/" target="_blank"> پارس پال </a> برای افزونه Restrict Content Pro | از سری محصولات وب سایت <a href="http://webforest.ir">وب فارست</a>
 Plugin URI: http://webforest.ir/
 Author: حنّان ابراهیمی ستوده
 Author URI: http://hannanstd.ir/
@@ -32,7 +32,7 @@ if (!class_exists('RCP_ParsPal') ) {
 				
 		public function ParsPal_Register_By_HANNANStd($gateways) {
 			global $rcp_options;
-			$gateways['ParsPal'] = $rcp_options['parspal_name'] ? $rcp_options['parspal_name'] : __( 'پارس پال', 'rcp_parspal');
+			$gateways['ParsPal'] = isset($rcp_options['parspal_name']) ? $rcp_options['parspal_name'] : __( 'پارس پال', 'rcp_parspal');
 			return $gateways;
 		}
 
@@ -74,7 +74,7 @@ if (!class_exists('RCP_ParsPal') ) {
 						<label for="rcp_settings[parspal_query_name]"><?php _e( 'نام لاتین درگاه', 'rcp_parspal' ); ?></label>
 					</th>
 					<td>
-						<input class="regular-text" id="rcp_settings[parspal_query_name]" style="width: 300px;" name="rcp_settings[parspal_query_name]" value="<?php echo $rcp_options['parspal_query_name'] ? $rcp_options['parspal_query_name'] : 'ParsPal'; ?>"/>
+						<input class="regular-text" id="rcp_settings[parspal_query_name]" style="width: 300px;" name="rcp_settings[parspal_query_name]" value="<?php echo isset($rcp_options['parspal_query_name']) ? $rcp_options['parspal_query_name'] : 'ParsPal'; ?>"/>
 						<div class="description"><?php _e( 'این نام در هنگام بازگشت از بانک در آدرس بازگشت از بانک نمایان خواهد شد . از به کاربردن حروف زائد و فاصله جدا خودداری نمایید .', 'rcp_parspal' ); ?></div>
 					</td>
 				</tr>
@@ -83,7 +83,7 @@ if (!class_exists('RCP_ParsPal') ) {
 						<label for="rcp_settings[parspal_name]"><?php _e( 'نام نمایشی درگاه', 'rcp_parspal' ); ?></label>
 					</th>
 					<td>
-						<input class="regular-text" id="rcp_settings[parspal_name]" style="width: 300px;" name="rcp_settings[parspal_name]" value="<?php echo $rcp_options['parspal_name'] ? $rcp_options['parspal_name'] : __( 'پارس پال', 'rcp_parspal'); ?>"/>
+						<input class="regular-text" id="rcp_settings[parspal_name]" style="width: 300px;" name="rcp_settings[parspal_name]" value="<?php echo isset($rcp_options['parspal_name']) ? $rcp_options['parspal_name'] : __( 'پارس پال', 'rcp_parspal'); ?>"/>
 					</td>
 				</tr>
 				<tr valign="top">
@@ -103,7 +103,7 @@ if (!class_exists('RCP_ParsPal') ) {
 			
 			global $rcp_options;
 			
-			$query = $rcp_options['parspal_query_name'] ? $rcp_options['parspal_query_name'] : 'ParsPal';
+			$query = isset($rcp_options['parspal_query_name']) ? $rcp_options['parspal_query_name'] : 'ParsPal';
 			$amount = $subscription_data['price'];
 			//fee is just for paypal recurring or ipn gateway ....
 			//$amount = $subscription_data['price'] + $subscription_data['fee']; 
@@ -147,8 +147,8 @@ if (!class_exists('RCP_ParsPal') ) {
 			}
 			else 
 			{
-				$MerchantID = $rcp_options['parspal_merchant'];
-				$Password = $rcp_options['parspal_password'];
+				$MerchantID = isset($rcp_options['parspal_merchant']) ? $rcp_options['parspal_merchant'] : '';
+				$Password = isset($rcp_options['parspal_password']) ? $rcp_options['parspal_password'] : '';
 				$WebServiceUrl = 'http://merchant.parspal.com/WebService.asmx?wsdl';
 			}	
 			$client = new SoapClient($WebServiceUrl);
@@ -184,7 +184,7 @@ if (!class_exists('RCP_ParsPal') ) {
 			else 
 				$parspal_payment_data = isset($_SESSION["parspal_payment_data"]) ? $_SESSION["parspal_payment_data"] : '';
 			
-			$query = $rcp_options['parspal_query_name'] ? $rcp_options['parspal_query_name'] : 'ParsPal';
+			$query = isset($rcp_options['parspal_query_name']) ? $rcp_options['parspal_query_name'] : 'ParsPal';
 						
 			if 	( ($_GET['gateway'] == $query) && $parspal_payment_data )
 			{
@@ -200,7 +200,7 @@ if (!class_exists('RCP_ParsPal') ) {
 				
 				$subscription_id    = rcp_get_subscription_id( $user_id );
 				$user_data          = get_userdata( $user_id );
-				$payment_method =  $rcp_options['parspal_name'] ? $rcp_options['parspal_name'] : __( 'پارس پال', 'rcp_parspal');
+				$payment_method =  isset($rcp_options['parspal_name']) ? $rcp_options['parspal_name'] : __( 'پارس پال', 'rcp_parspal');
 				
 				if( ! $user_data || ! $subscription_id || ! rcp_get_subscription_details( $subscription_id ) )
 					return;
@@ -225,8 +225,8 @@ if (!class_exists('RCP_ParsPal') ) {
 					}
 					else 
 					{
-						$MerchantID = $rcp_options['parspal_merchant'];
-						$Password = $rcp_options['parspal_password'];
+						$MerchantID = isset($rcp_options['parspal_merchant']) ? $rcp_options['parspal_merchant'] : '';
+						$Password = isset($rcp_options['parspal_password']) ? $rcp_options['parspal_password'] : '';
 						$WebServiceUrl = 'http://merchant.parspal.com/WebService.asmx?wsdl';
 					}	
 					$client = new SoapClient($WebServiceUrl);
@@ -298,13 +298,17 @@ if (!class_exists('RCP_ParsPal') ) {
 					
 					
 						rcp_set_status( $user_id, 'active' );
-						rcp_email_subscription_status( $user_id, 'active' );
-				
-						if( ! isset( $rcp_options['disable_new_user_notices'] ) ) {
-							wp_new_user_notification( $user_id );
+						
+						if( version_compare( RCP_PLUGIN_VERSION, '2.1.0', '<' ) ) {
+							rcp_email_subscription_status( $user_id, 'active' );
+							if( ! isset( $rcp_options['disable_new_user_notices'] ) )
+								wp_new_user_notification( $user_id );
 						}
-					
-					
+						
+						
+						update_user_meta( $user_id, 'rcp_payment_profile_id', $user_id );
+						
+						
 						update_user_meta( $user_id, 'rcp_signup_method', 'live' );
 						//rcp_recurring is just for paypal or ipn gateway
 						update_user_meta( $user_id, 'rcp_recurring', 'no' ); 
@@ -361,7 +365,7 @@ if (!class_exists('RCP_ParsPal') ) {
 									
 						$log_data = array(
 							'post_title'    => __( 'خطا در پرداخت', 'rcp_parspal' ),
-							'post_content'  =>  __( 'تراکنش به دلیل خطای رو به رو ناموفق باقی ماند :', 'rcp_parspal' ).$this->Fault($fault).__( ' روش پرداخت : ', 'rcp_parspal' ).$payment_method,
+							'post_content'  =>  __( 'تراکنش به دلیل خطای رو به رو ناموفق باقی باند :', 'rcp_parspal' ).$this->Fault($fault).__( ' روش پرداخت : ', 'rcp_parspal' ).$payment_method,
 							'post_parent'   => 0,
 							'log_type'      => 'gateway_error'
 						);
@@ -434,7 +438,7 @@ if (!class_exists('RCP_ParsPal') ) {
 			}
 			
 			if ($payment_status == 'failed') {
-				$message = '<br/>'.__( 'تراکنش به دلیل خطای زیر ناموفق باقی ماند :', 'rcp_parspal' ).'<br/>'.$fault.'<br/>';
+				$message = '<br/>'.__( 'تراکنش به دلیل خطای زیر ناموفق باقی باند :', 'rcp_parspal' ).'<br/>'.$fault.'<br/>';
 			}
 			
 			return $content.$message;
@@ -496,4 +500,12 @@ if (!class_exists('RCP_ParsPal') ) {
 	}
 }
 new RCP_ParsPal();
+if ( !function_exists('change_cancelled_to_pending_By_HANNANStd')) {	
+	add_action( 'rcp_set_status', 'change_cancelled_to_pending_By_HANNANStd', 10, 2 );
+	function change_cancelled_to_pending_By_HANNANStd( $status, $user_id ) {
+		if( 'cancelled' == $status )
+			rcp_set_status( $user_id, 'expired' );
+			return true;
+	}
+}
 ?>
