@@ -19,6 +19,10 @@ Restrict Content Pro - ParsPal Gateway
 
 = Persian Description =
 * درگاه پرداخت پارس پال برای افزونه فوق العاده فروش اشتراک کاربران
+*  دانلود سایر درگاه های ایرانی(http://webforest.ir/shop)
+
+= توجه =
+* همین درگاه ها ما در مارکت های معروف به فروش گذاشته شده است
 
 = Compatibility =
 * Wordpress 3.8
